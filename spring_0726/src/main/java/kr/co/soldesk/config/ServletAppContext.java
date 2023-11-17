@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import kr.co.soldesk.interceptor.TopMenuInterceptor;
 import kr.co.soldesk.mapper.BoardMapper;
 import kr.co.soldesk.mapper.TopMenuMapper;
+import kr.co.soldesk.mapper.UserMapper;
 import kr.co.soldesk.service.TopMenuService;
 
 @Configuration
@@ -97,6 +100,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 	   }
 	   
 	   // 쿼리문 실행을 위한 객체(Mapper 관리)
+	   // Mapper 등록
 	   @Bean
 	   public MapperFactoryBean<BoardMapper> getBoardMapper(SqlSessionFactory factory) throws Exception{
 	      MapperFactoryBean<BoardMapper> factoryBean = new MapperFactoryBean<BoardMapper>(BoardMapper.class);
@@ -111,10 +115,32 @@ public class ServletAppContext implements WebMvcConfigurer{
 	      factoryBean.setSqlSessionFactory(factory);
 	      return factoryBean;
 	   }
-
+	   
+	   // Mapper 등록
+	   @Bean
+	   public MapperFactoryBean<UserMapper> getUserMapper(SqlSessionFactory factory) throws Exception{
+	      MapperFactoryBean<UserMapper> factoryBean = new MapperFactoryBean<UserMapper>(UserMapper.class);
+	      factoryBean.setSqlSessionFactory(factory);
+	      return factoryBean;
+	   }
 
 	 //==============================================================
 	   
+	 // 메세지 properties 등록(에러메세지)
+	 @Bean
+	 public ReloadableResourceBundleMessageSource messageSource() {
+		 ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
+		 res.setBasenames("/WEB-INF/properties/error_message");
+		 
+		 return res;
+	 }
+	 
+	 // 소스와 메세지는 별도라는 설정
+	 @Bean
+	 public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
+	      return new PropertySourcesPlaceholderConfigurer();
+	 }
+	 
 	
 	
 	
