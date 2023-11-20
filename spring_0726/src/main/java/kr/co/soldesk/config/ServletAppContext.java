@@ -1,5 +1,7 @@
 package kr.co.soldesk.config;
 
+import javax.annotation.Resource;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import kr.co.soldesk.beans.UserBean;
 import kr.co.soldesk.interceptor.TopMenuInterceptor;
 import kr.co.soldesk.mapper.BoardMapper;
 import kr.co.soldesk.mapper.TopMenuMapper;
@@ -48,6 +51,10 @@ public class ServletAppContext implements WebMvcConfigurer{
 	   @Autowired
 	   private TopMenuService topMenuService;
 	   
+	   @Resource(name="loginUserBean")
+	   private UserBean loginUserBean;
+	   
+	   
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		// view로 보내질 최종 요청응답에 관한 환경설정
@@ -70,10 +77,11 @@ public class ServletAppContext implements WebMvcConfigurer{
 		WebMvcConfigurer.super.addInterceptors(registry);
 		
 		//메소드 인터셉터 하나 추가
-		TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService);
+		TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService, loginUserBean);
 		InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
 		
 		reg1.addPathPatterns("/**"); //반응시킬 곳 지정
+		// 모두 곳에 뿌리겠다고 선언
 	}
 
 	

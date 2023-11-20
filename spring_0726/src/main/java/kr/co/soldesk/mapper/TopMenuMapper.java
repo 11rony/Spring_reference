@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Select;
 
 import kr.co.soldesk.beans.BoardInfoBean;
+import kr.co.soldesk.service.TopMenuService;
 import lombok.Getter;
 import lombok.Setter;
 

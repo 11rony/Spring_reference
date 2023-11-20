@@ -17,6 +17,6 @@ public class RestApiController {
 	public String checkUserIdExist(@PathVariable String user_id) {
 		boolean chk = userService.checkUserIdExist(user_id);
 		
-		return chk+"";
+		return chk+"";                                             
 	}
 }
