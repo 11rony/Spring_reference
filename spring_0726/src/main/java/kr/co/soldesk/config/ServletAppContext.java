@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import kr.co.soldesk.beans.UserBean;
+import kr.co.soldesk.interceptor.CheckLoginInterceptor;
 import kr.co.soldesk.interceptor.TopMenuInterceptor;
 import kr.co.soldesk.mapper.BoardMapper;
 import kr.co.soldesk.mapper.TopMenuMapper;
@@ -76,12 +77,18 @@ public class ServletAppContext implements WebMvcConfigurer{
 	public void addInterceptors(InterceptorRegistry registry) {
 		WebMvcConfigurer.super.addInterceptors(registry);
 		
-		//메소드 인터셉터 하나 추가
+		//메소드 인터셉터 추가
 		TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService, loginUserBean);
-		InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
+		CheckLoginInterceptor checkLoginInterceptor = new CheckLoginInterceptor(loginUserBean);
 		
-		reg1.addPathPatterns("/**"); //반응시킬 곳 지정
-		// 모두 곳에 뿌리겠다고 선언
+		//인터셉터 등록
+		InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
+		InterceptorRegistration reg2 = registry.addInterceptor(checkLoginInterceptor);
+		
+		//반응시킬 곳 지정
+		reg1.addPathPatterns("/**"); // 모두 곳에 뿌리겠다고 선언
+		reg2.addPathPatterns("/user/modify", "/user/logout", "/board/*"); //로그인 되지 않은 상태에서 접근을 막는 카테고리
+		reg2.excludePathPatterns("/board/main"); // 제외 요청
 	}
 
 	
@@ -148,11 +155,5 @@ public class ServletAppContext implements WebMvcConfigurer{
 	 public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
 	      return new PropertySourcesPlaceholderConfigurer();
 	 }
-	 
 	
-	
-	
-	
-	
-
 }

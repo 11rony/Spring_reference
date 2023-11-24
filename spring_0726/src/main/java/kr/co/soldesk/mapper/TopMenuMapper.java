@@ -9,8 +9,7 @@ import kr.co.soldesk.service.TopMenuService;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+
 
 public interface TopMenuMapper {
 	

@@ -79,9 +79,4 @@ public class UserBean {
 	public void setUser_pw2(String user_pw2) {
 		this.user_pw2 = user_pw2;
 	}
-	
-	
-	
-	
-	
 }

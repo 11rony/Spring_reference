@@ -31,6 +31,4 @@ public class TopMenuInterceptor implements HandlerInterceptor{
 		request.setAttribute("loginUserBean", loginUserBean);
 		return true;
 	}
-	
-	
 }

@@ -11,6 +11,8 @@
 <title>미니 프로젝트</title>
 <!-- Bootstrap CDN -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
@@ -27,7 +29,7 @@
 
       $.ajax({
          type : 'GET',
-         url : '${root}user/checkUserIdExist/' + user_id,
+         url : '${root}user/checkUserIdExist/'+user_id,
          dataType : 'text',
          success : function(result) {
             if (result.trim() === 'true') {
@@ -45,8 +47,8 @@
    function resetUserIdExist() {
 
       $("#userIdExist").val('false');
-
    }
+   
 </script>
 
 </head>
@@ -82,7 +84,6 @@
 								<form:password path="user_pw" class="form-control" />
 								<form:errors path="user_pw" style='color:red' />
 							</div>
-
 							<div class="form-group">
 								<form:label path="user_pw2">비밀번호 확인</form:label>
 								<form:password path="user_pw2" class="form-control" />

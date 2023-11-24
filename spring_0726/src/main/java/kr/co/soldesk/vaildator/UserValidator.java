@@ -5,32 +5,34 @@ import org.springframework.validation.Validator;
 
 import kr.co.soldesk.beans.UserBean;
 
-public class UserValidator implements Validator{
-	
+public class UserValidator implements Validator {
 
-	@Override
-	public boolean supports(Class<?> clazz) {
-		// TODO Auto-generated method stub
-		
-		return UserBean.class.isAssignableFrom(clazz);
-	}
+   @Override
+   public boolean supports(Class<?> clazz) {
+      return UserBean.class.isAssignableFrom(clazz);
+   }
 
-	@Override
-	public void validate(Object target, Errors errors) {
-		UserBean userbean = (UserBean)target; // À¯È¿¼º °Ë»ç Å¸°Ù ¼³Á¤
-		String beanName = errors.getObjectName();
-		System.out.println(beanName);
-		
-		// joinUserBeanÀÌ¸§ÀÇ UserBean °´Ã¼¿¡¸¸ Àû¿ë
-		if(beanName.equals("joinUserBean")) { //È¸¿ø°¡ÀÔ Áß¿¡¸¸ ÀÛµ¿ÇÏ°Ô ¼³Á¤ 
-			if(userbean.getUser_pw().equals(userbean.getUser_pw2())==false) {
-				errors.rejectValue("user_pw", "NotEquals");
-				errors.rejectValue("user_pw2", "NotEquals");
-			}
-			if(userbean.isUserIdExist()==false) {
-				errors.rejectValue("user_id", "DontCheckUserIdExist");
-			}
-		}
-		
-	}
+   @Override
+   public void validate(Object target, Errors errors) {
+
+      UserBean userBean = (UserBean) target;
+      String beanName = errors.getObjectName();
+      System.out.println(beanName);
+
+      // íšŒì›ê°€ì…ê³¼ ë§ˆì´í˜ì´ì§€ì—ì„œ ë™ì‘í•˜ë„ë¡ ì„¤ì •
+      if (beanName.equals("joinuserBean") || beanName.equals("modifyUserBean")) {
+         if (userBean.getUser_pw().equals(userBean.getUser_pw2()) == false) {
+            errors.rejectValue("user_pw", "NotEquals");
+            errors.rejectValue("user_pw2", "NotEquals");
+         }
+
+         // íšŒì›ê°€ì…ì‹œì—ë§Œ (ì¤‘ë³µí™•ì¸)
+         if (beanName.equals("joinUserBean")) {
+            if (userBean.isUserIdExist() == false) {
+               errors.rejectValue("user_id", "DontCheckUserIdExist");
+            }
+         }
+      }
+
+   }
 }
