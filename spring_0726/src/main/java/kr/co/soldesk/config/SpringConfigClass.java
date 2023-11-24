@@ -1,79 +1,99 @@
 package kr.co.soldesk.config;
 
 import javax.servlet.FilterRegistration;
+import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
+import javax.servlet.ServletRegistration.Dynamic;
 
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class SpringConfigClass implements WebApplicationInitializer{
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
 
+
+//public class SpringConfigClass implements WebApplicationInitializer{
+//
+//	@Override
+//	public void onStartup(ServletContext servletContext) throws ServletException {
+//		
+//		AnnotationConfigWebApplicationContext servletAppContext=new AnnotationConfigWebApplicationContext();
+//		servletAppContext.register(ServletAppContext.class);
+//		
+//		DispatcherServlet dispatcherServlet=new DispatcherServlet(servletAppContext);
+//		ServletRegistration.Dynamic servlet=servletContext.addServlet("dispatcher", dispatcherServlet);
+//		
+//		//ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½
+//		servlet.setLoadOnStartup(1); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Æµï¿½ï¿½Ì°Ú´Ù´ï¿½ ï¿½ï¿½ => ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½
+//		servlet.addMapping("/");
+//		
+//		//==============================================================
+//		//Beanï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//		AnnotationConfigWebApplicationContext rootAppContext=new AnnotationConfigWebApplicationContext();
+//		rootAppContext.register(RootAppContext.class);
+//		
+//		ContextLoaderListener listener=new ContextLoaderListener(rootAppContext);
+//		servletContext.addListener(listener);
+//		
+//		//ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
+//		FilterRegistration.Dynamic filter = servletContext.addFilter("encodingFilter", CharacterEncodingFilter.class);
+//		filter.setInitParameter("encoding", "UTF-8");
+//		filter.addMappingForServletNames(null, false, "dispatcher");
+//		
+//	}
+//}
+
+public class SpringConfigClass extends AbstractAnnotationConfigDispatcherServletInitializer {
+	//DispatcherServletï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	@Override
-	public void onStartup(ServletContext servletContext) throws ServletException {
+	protected String[] getServletMappings() {
+		// TODO Auto-generated method stub
+		return new String[] { "/" };
+	}
+
+	// Spring MVC ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+	@Override
+	protected Class<?>[] getServletConfigClasses() {
+		// TODO Auto-generated method stub
+		return new Class[] { ServletAppContext.class };
+	}
+
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Beanï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç±ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+	@Override
+	protected Class<?>[] getRootConfigClasses() {
+		// TODO Auto-generated method stub
+		return new Class[] { RootAppContext.class };
+	}
+
+	// ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	@Override
+	protected Filter[] getServletFilters() {
+		// TODO Auto-generated method stub
+		CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+		encodingFilter.setEncoding("UTF-8");
+		return new Filter[] { encodingFilter };
+	}
+	
+	// null : ì‚¬ìš©ìžê°€ ìž…ë ¥í•˜ ë‚´ìš©ì„ ìž„ì‹œê¸°ì–µí•  ì•„íŒŒì¹˜í†°ì¼“ì—ì„œ ì œê³µí•˜ëŠ” ì„œë²„ì˜ ìž„ì‹œê¸°ì–µìž¥ì†Œ
+	// 52428800 : ì—…ë¡œë“œ ë°ì´í„°ì˜ ìµœëŒ€ ìš©ëŸ‰ í¬ê¸° (1024*50) 50MB
+	// 524280000 : íŒŒì¼ë°ì´í„°ë¥¼ í¬í•¨í•œ ì „ì²´ìš©ëŸ‰ 500MB
+	// 0 : íŒŒì¼ì˜ ìž„ê³„ê°’ (ë°ì´í„°ë¥¼ ë°›ì•„ì„œ ìžë™ìœ¼ë¡œ ì €ìž¥ )
+	
+	@Override
+	protected void customizeRegistration(Dynamic registration) {
+		// TODO Auto-generated method stub
+		super.customizeRegistration(registration);
 		
-		AnnotationConfigWebApplicationContext servletAppContext=new AnnotationConfigWebApplicationContext();
-		servletAppContext.register(ServletAppContext.class);
-		
-		DispatcherServlet dispatcherServlet=new DispatcherServlet(servletAppContext);
-		ServletRegistration.Dynamic servlet=servletContext.addServlet("dispatcher", dispatcherServlet);
-		
-		//ºÎ°¡¼³Á¤
-		servlet.setLoadOnStartup(1); //°¡Àå¸ÕÀú ¹Þ¾ÆµéÀÌ°Ú´Ù´Â ¶æ => ¿©±â¼­ Ãâ¹ß
-		servlet.addMapping("/");
-		
-		//==============================================================
-		//BeanµéÀ» Á¤ÀÌÇÏ¿© °ü¸®ÇÔ
-		AnnotationConfigWebApplicationContext rootAppContext=new AnnotationConfigWebApplicationContext();
-		rootAppContext.register(RootAppContext.class);
-		
-		ContextLoaderListener listener=new ContextLoaderListener(rootAppContext);
-		servletContext.addListener(listener);
-		
-		//ÆÄ¶ó¹ÌÅÍ ÀÎÄÚµù ¼³Á¤
-		FilterRegistration.Dynamic filter = servletContext.addFilter("encodingFilter", CharacterEncodingFilter.class);
-		filter.setInitParameter("encoding", "UTF-8");
-		filter.addMappingForServletNames(null, false, "dispatcher");
-		
+		MultipartConfigElement config1 = new MultipartConfigElement(null, 52428800, 524288000, 0);
+		registration.setMultipartConfig(config1);
 	}
 }
-
-
-/*public class SpringConfigClass extends AbstractAnnotationConfigDispatcherServletInitializer {
-// DispatcherServlet¿¡ ¸ÅÇÎÇÒ ¿äÃ» ÁÖ¼Ò¸¦ ¼ÂÆÃÇÑ´Ù.
-@Override
-protected String[] getServletMappings() {
-	// TODO Auto-generated method stub
-	return new String[] { "/" };
-}
-
-// Spring MVC ÇÁ·ÎÁ§Æ® ¼³Á¤À» À§ÇÑ Å¬·¡½º¸¦ ÁöÁ¤ÇÑ´Ù.
-@Override
-protected Class<?>[] getServletConfigClasses() {
-	// TODO Auto-generated method stub
-	return new Class[] { ServletAppContext.class };
-}
-
-// ÇÁ·ÎÁ§Æ®¿¡¼­ »ç¿ëÇÒ BeanµéÀ» Á¤ÀÇ±â À§ÇÑ Å¬·¡½º¸¦ ÁöÁ¤ÇÑ´Ù.
-@Override
-protected Class<?>[] getRootConfigClasses() {
-	// TODO Auto-generated method stub
-	return new Class[] { RootAppContext.class };
-}
-
-// ÆÄ¶ó¹ÌÅÍ ÀÎÄÚµù ÇÊÅÍ ¼³Á¤
-@Override
-protected Filter[] getServletFilters() {
-	// TODO Auto-generated method stub
-	CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
-	encodingFilter.setEncoding("UTF-8");
-	return new Filter[] {encodingFilter};
-}
-}*/
 
 
 

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -58,12 +59,12 @@ public class ServletAppContext implements WebMvcConfigurer{
 	   
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
-		// view·Î º¸³»Áú ÃÖÁ¾ ¿äÃ»ÀÀ´ä¿¡ °üÇÑ È¯°æ¼³Á¤
+		// viewï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ä¿¡ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æ¼³ï¿½ï¿½
 		WebMvcConfigurer.super.configureViewResolvers(registry);
 		registry.jsp("/WEB-INF/views/", ".jsp");
 	}
 	
-	//Á¤Àû ÆÄÀÏÀÇ °æ·Î¸¦ ¸ÅÇÎ
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// TODO Auto-generated method stub
@@ -77,20 +78,25 @@ public class ServletAppContext implements WebMvcConfigurer{
 	public void addInterceptors(InterceptorRegistry registry) {
 		WebMvcConfigurer.super.addInterceptors(registry);
 		
-		//¸Ş¼Òµå ÀÎÅÍ¼ÁÅÍ Ãß°¡
+		//ï¿½Ş¼Òµï¿½ ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 		TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService, loginUserBean);
 		CheckLoginInterceptor checkLoginInterceptor = new CheckLoginInterceptor(loginUserBean);
 		
-		//ÀÎÅÍ¼ÁÅÍ µî·Ï
+		//ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
 		InterceptorRegistration reg2 = registry.addInterceptor(checkLoginInterceptor);
 		
-		//¹İÀÀ½ÃÅ³ °÷ ÁöÁ¤
-		reg1.addPathPatterns("/**"); // ¸ğµÎ °÷¿¡ »Ñ¸®°Ú´Ù°í ¼±¾ğ
-		reg2.addPathPatterns("/user/modify", "/user/logout", "/board/*"); //·Î±×ÀÎ µÇÁö ¾ÊÀº »óÅÂ¿¡¼­ Á¢±ÙÀ» ¸·´Â Ä«Å×°í¸®
-		reg2.excludePathPatterns("/board/main"); // Á¦¿Ü ¿äÃ»
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		reg1.addPathPatterns("/**"); // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¸ï¿½ï¿½Ú´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½
+		reg2.addPathPatterns("/user/modify", "/user/logout", "/board/*"); //ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½×°ï¿½
+		reg2.excludePathPatterns("/board/main"); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
 	}
 
+	//==============================================================
+	@Bean // standard multipart ì„¤ì •
+	public StandardServletMultipartResolver multipartResolver() {
+		return new StandardServletMultipartResolver(); //ê°ì²´ ìƒì„±í•˜ì—¬ ë°˜í™˜
+	}
 	
 	
 	//==============================================================
@@ -105,7 +111,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 	      return source;
 	   }
 	   
-	   // Äõ¸®¹®°ú Á¢¼Ó Á¤º¸¸¦ °ü¸®ÇÏ´Â °´Ã¼
+	   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã¼
 	   @Bean
 	   public SqlSessionFactory factory(BasicDataSource source) throws Exception{
 	      SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
@@ -114,8 +120,8 @@ public class ServletAppContext implements WebMvcConfigurer{
 	      return factory;
 	   }
 	   
-	   // Äõ¸®¹® ½ÇÇàÀ» À§ÇÑ °´Ã¼(Mapper °ü¸®)
-	   // Mapper µî·Ï
+	   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼(Mapper ï¿½ï¿½ï¿½ï¿½)
+	   // Mapper ï¿½ï¿½ï¿½
 	   @Bean
 	   public MapperFactoryBean<BoardMapper> getBoardMapper(SqlSessionFactory factory) throws Exception{
 	      MapperFactoryBean<BoardMapper> factoryBean = new MapperFactoryBean<BoardMapper>(BoardMapper.class);
@@ -123,7 +129,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 	      return factoryBean;
 	   }
 	   
-	   // Mapper µî·Ï
+	   // Mapper ï¿½ï¿½ï¿½
 	   @Bean
 	   public MapperFactoryBean<TopMenuMapper> getTopMenuMapper(SqlSessionFactory factory) throws Exception{
 	      MapperFactoryBean<TopMenuMapper> factoryBean = new MapperFactoryBean<TopMenuMapper>(TopMenuMapper.class);
@@ -131,7 +137,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 	      return factoryBean;
 	   }
 	   
-	   // Mapper µî·Ï
+	   // Mapper ï¿½ï¿½ï¿½
 	   @Bean
 	   public MapperFactoryBean<UserMapper> getUserMapper(SqlSessionFactory factory) throws Exception{
 	      MapperFactoryBean<UserMapper> factoryBean = new MapperFactoryBean<UserMapper>(UserMapper.class);
@@ -141,7 +147,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 
 	 //==============================================================
 	   
-	 // ¸Ş¼¼Áö properties µî·Ï(¿¡·¯¸Ş¼¼Áö)
+	 // ï¿½Ş¼ï¿½ï¿½ï¿½ properties ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½Ş¼ï¿½ï¿½ï¿½)
 	 @Bean
 	 public ReloadableResourceBundleMessageSource messageSource() {
 		 ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
@@ -150,7 +156,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 		 return res;
 	 }
 	 
-	 // ¼Ò½º¿Í ¸Ş¼¼Áö´Â º°µµ¶ó´Â ¼³Á¤
+	 // ï¿½Ò½ï¿½ï¿½ï¿½ ï¿½Ş¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	 @Bean
 	 public static PropertySourcesPlaceholderConfigurer PropertySourcesPlaceholderConfigurer() {
 	      return new PropertySourcesPlaceholderConfigurer();

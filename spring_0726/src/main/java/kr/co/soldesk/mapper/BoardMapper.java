@@ -6,4 +6,6 @@ import lombok.Setter;
 
 public interface BoardMapper {
 
+	
+		
 }
