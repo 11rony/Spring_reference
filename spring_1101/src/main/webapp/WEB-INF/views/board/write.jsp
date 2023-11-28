@@ -81,7 +81,7 @@
 					    </div>
 						<div class="form-group">
 							<div class="text-right">
-								<button type="submit" class="btn btn-primary">작성하기</button>
+								<form:button type="submit" class="btn btn-primary">작성하기</form:button>
 							</div>
 						</div>
 					

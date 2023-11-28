@@ -1,5 +1,6 @@
 package kr.co.soldesk.controller;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.soldesk.beans.ContentBean;
+import kr.co.soldesk.beans.PageBean;
 import kr.co.soldesk.beans.UserBean;
 import kr.co.soldesk.service.BoardService;
 
@@ -30,7 +32,9 @@ public class BoardController {
 	private UserBean loginUserBean;
 	
 	@GetMapping("/main")
-	public String main(@RequestParam("board_info_idx") int board_info_idx, Model model) { //a태그로 넘겨서 @RequestParam으로 받음
+	public String main(@RequestParam("board_info_idx") int board_info_idx,
+						@RequestParam(value="page", defaultValue = "1") int page,
+						Model model) { //a태그로 넘겨서 @RequestParam으로 받음
 		
 		model.addAttribute("board_info_idx", board_info_idx);
 		
@@ -38,22 +42,28 @@ public class BoardController {
 		
 		model.addAttribute("boardInfoName", boardInfoName);
 		
-		List<ContentBean> contentList = boardService.getContentList(board_info_idx);
+		List<ContentBean> contentList = boardService.getContentList(board_info_idx,page);
 		model.addAttribute("contentList", contentList);
 		model.addAttribute("loginUserBean", loginUserBean);
+		
+		PageBean pageBean = boardService.getContentCnt(board_info_idx, page);
+		model.addAttribute("pageBean", pageBean);
+		model.addAttribute("page", page);
 		
 		return "board/main";
 	}
 	
 	@GetMapping("/read")
 	public String read(@RequestParam("board_info_idx") int board_info_idx,
-					   @RequestParam("content_idx") int content_idx, Model model) {
+					   @RequestParam("content_idx") int content_idx,
+					   @RequestParam(value="page", defaultValue = "1") int page,
+					   Model model) {
 		
 		model.addAttribute("board_info_idx", board_info_idx);
 		ContentBean readContentBean = boardService.getContentInfo(content_idx);
 		model.addAttribute("readContentBean", readContentBean); //상세정보
 		model.addAttribute("content_idx", content_idx); //수정할 글의 인덱스 번호 호출
-		
+		model.addAttribute("page", page);
 		
 		return "board/read";
 	}
@@ -61,6 +71,7 @@ public class BoardController {
 	@GetMapping("/write")
 	public String write(@ModelAttribute("writeContentBean") ContentBean writeContentBean,
 						@RequestParam("board_info_idx") int board_info_idx) { //set
+		
 		writeContentBean.setContent_board_idx(board_info_idx);
 		
 		return "board/write";
@@ -72,7 +83,10 @@ public class BoardController {
 			return "board/write";
 		}
 		
+
 		boardService.addContentInfo(writeContentBean);
+		
+		
 		
 		return "board/write_success";
 	}
@@ -87,11 +101,12 @@ public class BoardController {
 	public String modify(@RequestParam("board_info_idx") int board_info_idx,
 						 @RequestParam("content_idx") int content_idx,
 						 @ModelAttribute("modifyContentBean") ContentBean modifyContentBean,
+						 @RequestParam("page") int page,
 						 Model model) {
 		
 		model.addAttribute("board_info_idx", board_info_idx);
 		model.addAttribute("content_idx", content_idx);
-		
+		model.addAttribute("page", page);
 		//게시글 하나의 정보 가져오기
 		ContentBean tempContentBean = boardService.getContentInfo(content_idx);
 		modifyContentBean.setContent_writer_name(tempContentBean.getContent_writer_name()); 
@@ -108,7 +123,12 @@ public class BoardController {
 	}
 	
 	@PostMapping("/modify_pro")
-	public String modify_pro(@Valid @ModelAttribute("modifyContentBean") ContentBean modifyContentBean, BindingResult result) {
+	public String modify_pro(@Valid @ModelAttribute("modifyContentBean") ContentBean modifyContentBean, 
+							@RequestParam("page") int page,
+							Model model,
+							BindingResult result) {
+		
+		model.addAttribute("page", page);
 		
 		if(result.hasErrors()) {
 			return "board/modify";
